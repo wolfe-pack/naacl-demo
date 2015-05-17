@@ -1,0 +1,71 @@
+{
+  "name" : "Relation Extraction with Matrix Factorization",
+  "cells" : [ {
+    "id" : 0,
+    "compiler" : "scala",
+    "input" : {
+      "sessionId" : null,
+      "code" : "implicit def entities = List('Cambridge, 'UCL, 'Harvard, 'Petrie, 'Ferguson, 'Andrew, 'Trevelyan)\ndef employeeAt = Set('Petrie -> 'UCL)\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y))",
+      "extraFields" : {
+        "aggregatedCells" : "[]"
+      },
+      "outputFormat" : null
+    }
+  }, {
+    "id" : 1,
+    "compiler" : "scala",
+    "input" : {
+      "sessionId" : null,
+      "code" : "def is_historian_at = Set('Ferguson -> 'Harvard, 'Trevelyan -> 'Cambridge)\ndef is_professor_at = Set('Petrie -> 'UCL, 'Ferguson -> 'Harvard, 'Andrew -> 'Cambridge)\ndef museum_at = Set('Petrie -> 'UCL)\ndef teaches_history_at = Set('Andrew -> 'Cambridge)\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y) || is_historian_at(x -> y) || is_professor_at(x -> y) || museum_at(x -> y) || teaches_history_at(x -> y))",
+      "extraFields" : {
+        "aggregatedCells" : "[\"implicit def entities = List('Cambridge, 'UCL, 'Harvard, 'Petrie, 'Ferguson, 'Andrew, 'Trevelyan)\\ndef employeeAt = Set('Petrie -> 'UCL)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y))\"]"
+      },
+      "outputFormat" : null
+    }
+  }, {
+    "id" : 2,
+    "compiler" : "scala",
+    "input" : {
+      "sessionId" : null,
+      "code" : "val rows = (employeeAt ++ is_historian_at ++ is_professor_at ++ museum_at ++ teaches_history_at).toList",
+      "extraFields" : {
+        "aggregatedCells" : "[\"implicit def entities = List('Cambridge, 'UCL, 'Harvard, 'Petrie, 'Ferguson, 'Andrew, 'Trevelyan)\\ndef employeeAt = Set('Petrie -> 'UCL)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y))\",\"def is_historian_at = Set('Ferguson -> 'Harvard, 'Trevelyan -> 'Cambridge)\\ndef is_professor_at = Set('Petrie -> 'UCL, 'Ferguson -> 'Harvard, 'Andrew -> 'Cambridge)\\ndef museum_at = Set('Petrie -> 'UCL)\\ndef teaches_history_at = Set('Andrew -> 'Cambridge)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y) || is_historian_at(x -> y) || is_professor_at(x -> y) || museum_at(x -> y) || teaches_history_at(x -> y))\"]"
+      },
+      "outputFormat" : null
+    }
+  }, {
+    "id" : 3,
+    "compiler" : "scala",
+    "input" : {
+      "sessionId" : null,
+      "code" : "val cols = List('is_historian_at, 'is_professor_at, 'museum_at, 'teaches_history_at, 'employeeAt)",
+      "extraFields" : {
+        "aggregatedCells" : "[\"implicit def entities = List('Cambridge, 'UCL, 'Harvard, 'Petrie, 'Ferguson, 'Andrew, 'Trevelyan)\\ndef employeeAt = Set('Petrie -> 'UCL)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y))\",\"def is_historian_at = Set('Ferguson -> 'Harvard, 'Trevelyan -> 'Cambridge)\\ndef is_professor_at = Set('Petrie -> 'UCL, 'Ferguson -> 'Harvard, 'Andrew -> 'Cambridge)\\ndef museum_at = Set('Petrie -> 'UCL)\\ndef teaches_history_at = Set('Andrew -> 'Cambridge)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y) || is_historian_at(x -> y) || is_professor_at(x -> y) || museum_at(x -> y) || teaches_history_at(x -> y))\",\"val rows = (employeeAt ++ is_historian_at ++ is_professor_at ++ museum_at ++ teaches_history_at).toList\"]"
+      },
+      "outputFormat" : null
+    }
+  }, {
+    "id" : 4,
+    "compiler" : "scala",
+    "input" : {
+      "sessionId" : null,
+      "code" : "val pairToPairIx = rows.zipWithIndex.toMap\nval data = List(is_historian_at, is_professor_at, museum_at, teaches_history_at, employeeAt).map(_.map(pairToPairIx))",
+      "extraFields" : {
+        "aggregatedCells" : "[\"implicit def entities = List('Cambridge, 'UCL, 'Harvard, 'Petrie, 'Ferguson, 'Andrew, 'Trevelyan)\\ndef employeeAt = Set('Petrie -> 'UCL)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y))\",\"def is_historian_at = Set('Ferguson -> 'Harvard, 'Trevelyan -> 'Cambridge)\\ndef is_professor_at = Set('Petrie -> 'UCL, 'Ferguson -> 'Harvard, 'Andrew -> 'Cambridge)\\ndef museum_at = Set('Petrie -> 'UCL)\\ndef teaches_history_at = Set('Andrew -> 'Cambridge)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y) || is_historian_at(x -> y) || is_professor_at(x -> y) || museum_at(x -> y) || teaches_history_at(x -> y))\",\"val rows = (employeeAt ++ is_historian_at ++ is_professor_at ++ museum_at ++ teaches_history_at).toList\",\"val cols = List('is_historian_at, 'is_professor_at, 'museum_at, 'teaches_history_at, 'employeeAt)\"]"
+      },
+      "outputFormat" : null
+    }
+  }, {
+    "id" : 5,
+    "compiler" : "scala",
+    "input" : {
+      "sessionId" : null,
+      "code" : "Matrix((0 until rows.length).map(row => (0 until cols.length).map(col => if (data(col).contains(row)) 1.0 else 0.0).toSeq).toSeq)",
+      "extraFields" : {
+        "aggregatedCells" : "[\"implicit def entities = List('Cambridge, 'UCL, 'Harvard, 'Petrie, 'Ferguson, 'Andrew, 'Trevelyan)\\ndef employeeAt = Set('Petrie -> 'UCL)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y))\",\"def is_historian_at = Set('Ferguson -> 'Harvard, 'Trevelyan -> 'Cambridge)\\ndef is_professor_at = Set('Petrie -> 'UCL, 'Ferguson -> 'Harvard, 'Andrew -> 'Cambridge)\\ndef museum_at = Set('Petrie -> 'UCL)\\ndef teaches_history_at = Set('Andrew -> 'Cambridge)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y) || is_historian_at(x -> y) || is_professor_at(x -> y) || museum_at(x -> y) || teaches_history_at(x -> y))\",\"val rows = (employeeAt ++ is_historian_at ++ is_professor_at ++ museum_at ++ teaches_history_at).toList\",\"val cols = List('is_historian_at, 'is_professor_at, 'museum_at, 'teaches_history_at, 'employeeAt)\",\"val pairToPairIx = rows.zipWithIndex.toMap\\nval data = List(is_historian_at, is_professor_at, museum_at, teaches_history_at, employeeAt).map(_.map(pairToPairIx))\"]"
+      },
+      "outputFormat" : null
+    }
+  } ],
+  "config" : { }
+}
