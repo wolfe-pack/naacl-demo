@@ -1,0 +1,14 @@
+{
+  "name" : "NAACL 2015 Demo",
+  "cells" : [ {
+    "id" : 0,
+    "compiler" : "markdown",
+    "input" : {
+      "sessionId" : null,
+      "code" : "## [Gentle Introduction](/template/presentWolfe/???)\n\n## 1. [Sequence Tagging](/template/demo/???)\n\n## 2. [Relation Extraction](/template/demo/???)\n\n## 3. [Dependency Parsing](/template/demo/???)",
+      "extraFields" : { },
+      "outputFormat" : null
+    }
+  } ],
+  "config" : { }
+}
