@@ -66,6 +66,17 @@
       },
       "outputFormat" : null
     }
+  }, {
+    "id" : 6,
+    "compiler" : "scala",
+    "input" : {
+      "sessionId" : null,
+      "code" : "val k = 10\n\n//the domain of parameters\n@domain case class Theta(relations: IndexedSeq[Vect], pairs: IndexedSeq[Vect])\n\nimplicit val Thetas = Theta.Values(Seqs(Vectors(k), cols.size), Seqs(Vectors(k), rows.size))\n\n//the class of cells\n@domain case class Cell(s: Int, i: Int, j: Int)\n\n//the set of possible cells\nimplicit val Cells = Cell.Values(Ints(0 until rows.length), Ints(0 until entities.length), Ints(0 until entities.length))",
+      "extraFields" : {
+        "aggregatedCells" : "[\"implicit def entities = List('Cambridge, 'UCL, 'Harvard, 'Petrie, 'Ferguson, 'Andrew, 'Trevelyan)\\ndef employeeAt = Set('Petrie -> 'UCL)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y))\",\"def is_historian_at = Set('Ferguson -> 'Harvard, 'Trevelyan -> 'Cambridge)\\ndef is_professor_at = Set('Petrie -> 'UCL, 'Ferguson -> 'Harvard, 'Andrew -> 'Cambridge)\\ndef museum_at = Set('Petrie -> 'UCL)\\ndef teaches_history_at = Set('Andrew -> 'Cambridge)\\nGraph.fromPreds[Symbol](entities, (x,y) => employeeAt(x -> y) || is_historian_at(x -> y) || is_professor_at(x -> y) || museum_at(x -> y) || teaches_history_at(x -> y))\",\"val rows = (employeeAt ++ is_historian_at ++ is_professor_at ++ museum_at ++ teaches_history_at).toList\",\"val cols = List('is_historian_at, 'is_professor_at, 'museum_at, 'teaches_history_at, 'employeeAt)\",\"val pairToPairIx = rows.zipWithIndex.toMap\\nval data = List(is_historian_at, is_professor_at, museum_at, teaches_history_at, employeeAt).map(_.map(pairToPairIx))\",\"Matrix((0 until rows.length).map(row => (0 until cols.length).map(col => if (data(col).contains(row)) 1.0 else 0.0).toSeq).toSeq)\"]"
+      },
+      "outputFormat" : null
+    }
   } ],
   "config" : { }
 }
