@@ -10,17 +10,14 @@ You may have to delete the wolfe directory in the ivy cache to make sure you get
 
 ### Setup and Run Moro
 
-Setup the project specific configuration file 
-
-    cp naacl-moro.conf moro/conf/application.conf
-
-Initialize sub-modules (1), compile the project (2) and wolfe (3) and run moro (4-5).
+Initialize sub-modules (1), setup configuration file (2), compile the project (3) and wolfe (4) and run moro (5-6).
 
 1. `git submodule update --init --recursive`
-2. `sbt compile`
-3. `cd wolfe; sbt compile; cd ..`
-4. `cd moro; git checkout master`
-5. `sbt run`
+2. `cp naacl-moro.conf moro/conf/application.conf`
+3. `sbt compile`
+4. `cd wolfe; sbt compile; cd ..`
+5. `cd moro; git checkout master`
+6. `sbt run`
 
 Maybe (most definitely?) you'll need to clone htmlgen and scalaplot and install them to a local repository by running
 
