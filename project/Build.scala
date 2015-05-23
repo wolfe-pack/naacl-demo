@@ -44,17 +44,15 @@ object Build extends Build {
 
   lazy val wolfeNLP = ProjectRef(file("./wolfe"), "wolfe-nlp")
   lazy val wolfeCore = ProjectRef(file("./wolfe"), "wolfe-core")
-
   lazy val wolfeUI = ProjectRef(file("./wolfe"), "wolfe-ui")
 
-
-  lazy val naacl-demo = Project(
+  lazy val naaclDemo = Project(
     id = "naacl-demo",
     base = file("."),
     settings = buildSettings
   ) dependsOn(
     wolfeNLP % "test->test;compile->compile",
     wolfeUI % "test->test;compile->compile",
-    wolfeCore % "test->test;compile->compile"
-    )
+    wolfeCore % "test->test;compile->compile"    
+  )
 }
