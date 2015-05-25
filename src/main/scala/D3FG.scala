@@ -3,6 +3,8 @@ import ml.wolfe.term.TermImplicits._
 import org.sameersingh.htmlgen.{HTML, RawHTML}
 import ml.wolfe.ui.Json._
 
+import scala.util.Random
+
 /**
  * @author Luke Hewitt
  */
@@ -93,7 +95,7 @@ object D3FG {
       "schedule" -> toJson(schedule)
     ))
 
-    val id = "fg" + Math.abs(fg.hashCode()).toString
+    val id = "fg" + Random.nextLong.toString
     wrapCode(id, data.str)
   }
 
