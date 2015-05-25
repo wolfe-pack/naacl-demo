@@ -14,7 +14,7 @@ object CoNLL2000 {
     collection.immutable.IndexedSeq(chunkTags:_*)
   }
 
-  def train[T](f:IndexedSeq[String]) = {
+  def train() = {
     val data = new CoNLLReader("../wolfe/wolfe-examples/src/main/resources/ml/wolfe/datasets/conll2000/train.txt", " ")
     data.map(s => (s.tokens.map(_.word), getChunkTags(s)))
   }
