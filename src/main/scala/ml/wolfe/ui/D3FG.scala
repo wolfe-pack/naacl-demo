@@ -1,7 +1,8 @@
+package ml.wolfe.ui
+
 import ml.wolfe.term._
-import ml.wolfe.term.TermImplicits._
-import org.sameersingh.htmlgen.{HTML, RawHTML}
 import ml.wolfe.ui.Json._
+import org.sameersingh.htmlgen.{HTML, RawHTML}
 
 import scala.util.Random
 
@@ -39,7 +40,7 @@ object D3FG {
     RawHTML(html)
   }
 
-  def display[NodeContent, EdgeContent, FactorContent](fg: FG[NodeContent, EdgeContent, FactorContent]) = {
+  implicit def display[NodeContent, EdgeContent, FactorContent](fg: FG[NodeContent, EdgeContent, FactorContent]):HTML = {
 
     val nodesSeq = fg.nodes.filter(x => fg.activeNodes.contains(x._2)).toList
     val nodesIndex = nodesSeq.map(_._2).zipWithIndex.toMap
@@ -113,8 +114,8 @@ object D3FG {
 
 
   def main(args:Array[String]) {
-    import ml.wolfe.term.TermImplicits._
     import Argmaxer._
+    import ml.wolfe.term.TermImplicits._
 
     val n = 5
     val Y = Seqs(Bools, 0, n)
