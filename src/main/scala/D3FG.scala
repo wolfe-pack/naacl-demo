@@ -41,7 +41,7 @@ object D3FG {
 
   def display[NodeContent, EdgeContent, FactorContent](fg: FG[NodeContent, EdgeContent, FactorContent]) = {
 
-    val nodesSeq = fg.nodes.toList
+    val nodesSeq = fg.nodes.filter(x => fg.activeNodes.contains(x._2)).toList
     val nodesIndex = nodesSeq.map(_._2).zipWithIndex.toMap
     val nodes = nodesSeq.map{case (atom, node) =>
       toJson(Map(
@@ -55,9 +55,9 @@ object D3FG {
         "fixed"     -> toJson(false)
       ))
     }
-    val nNodes = fg.nodes.size
+    val nNodes = nodesSeq.size
 
-    val factorsSeq = fg.factors.toList
+    val factorsSeq = fg.factors.filter(x => fg.activeFactors.contains(x._2)).toList
     val factorsIndex = factorsSeq.zipWithIndex.map{ case((t, f), i) => (f, i+nNodes)}.toMap
     val factors = factorsSeq.map{case (term, factor) =>
       toJson(Map(
@@ -66,7 +66,7 @@ object D3FG {
       ))
     }
 
-    val edgesSeq = fg.edges.toList
+    val edgesSeq = fg.activeEdges.toList
     val edgesIndex = edgesSeq.zipWithIndex.toMap
     val links = edgesSeq.map { e =>
       toJson(Map(

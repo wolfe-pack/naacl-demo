@@ -11,7 +11,7 @@ object CoNLL2000 {
       chunkTags(chunk.start) = if (chunk.label == "O") "O" else "B-" + chunk.label
       for (i <- chunk.start+1 until chunk.end) chunkTags(i) = "I-" + chunk.label
     }
-    collection.immutable.IndexedSeq(chunkTags:_*)
+    IndexedSeq(chunkTags:_*)
   }
 
   def train() = {
