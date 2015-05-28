@@ -23,7 +23,8 @@ object D3FG {
          |                head.js(fgScriptLocation);
          |             }
          |             head.ready(function() {
-         |                var fgData = ${indent(29, fgData)};
+         |                var fgData =
+         |${fgData/*indent(29, fgData)*/};
          |                FG.create("$id", fgData);
          |             });
          |    </script>
@@ -42,8 +43,15 @@ object D3FG {
 
   implicit def display[NodeContent, EdgeContent, FactorContent](fg: FG[NodeContent, EdgeContent, FactorContent]):HTML = {
 
+    val width = 650
+    val height = 350
+
     val nodesSeq = fg.nodes.filter(x => fg.activeNodes.contains(x._2)).toList
     val nodesIndex = nodesSeq.map(_._2).zipWithIndex.toMap
+
+    val seqGroundAtomLength = nodesSeq.map(_._1).collect{ case s:SeqGroundAtom[_, _] => s}
+                                      .groupBy(_.seq.hashCode).map(x => (x._1, x._2.last.index))
+
     val nodes = nodesSeq.map{case (atom, node) =>
       toJson(Map(
         "type"      -> toJson("node"),
@@ -51,11 +59,21 @@ object D3FG {
         "hoverhtml" -> toJson(msgString(atom,
           node.content.asInstanceOf[MaxProductBP#NodeContent].belief)
         ),
-        "x"         -> toJson(Math.random()*600),
-        "y"         -> toJson(Math.random()*400),
-        "fixed"     -> toJson(false)
+        "x"         -> toJson(atom match {
+          case a:SeqGroundAtom[_, _] => width * a.index / seqGroundAtomLength(a.seq.hashCode)
+          case _ => Math.random() * width
+        }),
+        "y"         -> toJson(atom match {
+          case a:SeqGroundAtom[_, _] => height/2
+          case _ => Math.random() * height
+        }),
+        "fixed"     -> toJson(atom match {
+          case a:SeqGroundAtom[_, _] => a.index == 0 || a.index == seqGroundAtomLength(a.seq.hashCode)
+          case _ => false
+        })
       ))
     }
+
     val nNodes = nodesSeq.size
 
     val factorsSeq = fg.factors.filter(x => fg.activeFactors.contains(x._2)).toList
@@ -76,7 +94,7 @@ object D3FG {
       ))
     }
 
-    val schedule = fg.messageHistory.take(50).map { ms =>
+    val schedule = fg.messageHistory.take(20).map { ms =>
       toJson(ms.map{ m =>
         toJson(Map(
           "edge"      -> toJson(edgesIndex(m.edge)),
@@ -87,8 +105,8 @@ object D3FG {
     }
 
     val data = toJson(Map(
-      "width" -> toJson(650),
-      "height" -> toJson(250),
+      "width" -> toJson(width),
+      "height" -> toJson(height),
       "graph" -> toJson(Map(
         "nodes" -> (nodes ++ factors),
         "links" -> links
