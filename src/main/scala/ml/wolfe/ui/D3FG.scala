@@ -44,7 +44,7 @@ object D3FG {
   implicit def display[NodeContent, EdgeContent, FactorContent](fg: FG[NodeContent, EdgeContent, FactorContent]):HTML = {
 
     val width = 750
-    val height = 350
+    val height = 450
 
     val nodesSeq = fg.nodes.filter(x =>
       fg.activeNodes.contains(x._2) &&
