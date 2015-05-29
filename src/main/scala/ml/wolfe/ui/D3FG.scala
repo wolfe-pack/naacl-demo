@@ -43,10 +43,13 @@ object D3FG {
 
   implicit def display[NodeContent, EdgeContent, FactorContent](fg: FG[NodeContent, EdgeContent, FactorContent]):HTML = {
 
-    val width = 650
+    val width = 750
     val height = 350
 
-    val nodesSeq = fg.nodes.filter(x => fg.activeNodes.contains(x._2)).toList
+    val nodesSeq = fg.nodes.filter(x =>
+      fg.activeNodes.contains(x._2) &&
+      !x._1.isInstanceOf[LengthGroundAtom[_]]
+    ).toList
     val nodesIndex = nodesSeq.map(_._2).zipWithIndex.toMap
 
     val seqGroundAtomLength = nodesSeq.map(_._1).collect{ case s:SeqGroundAtom[_, _] => s}
@@ -60,7 +63,7 @@ object D3FG {
           node.content.asInstanceOf[MaxProductBP#NodeContent].belief)
         ),
         "x"         -> toJson(atom match {
-          case a:SeqGroundAtom[_, _] => width * a.index / seqGroundAtomLength(a.seq.hashCode)
+          case a:SeqGroundAtom[_, _] => 60 + (width-120) * a.index / seqGroundAtomLength(a.seq.hashCode)
           case _ => Math.random() * width
         }),
         "y"         -> toJson(atom match {
@@ -76,7 +79,10 @@ object D3FG {
 
     val nNodes = nodesSeq.size
 
-    val factorsSeq = fg.factors.filter(x => fg.activeFactors.contains(x._2)).toList
+    val factorsSeq = fg.factors.filter(x =>
+      fg.activeFactors.contains(x._2) &&
+      x._2.edges.forall(e => nodesIndex.contains(e.node))
+    ).toList
     val factorsIndex = factorsSeq.zipWithIndex.map{ case((t, f), i) => (f, i+nNodes)}.toMap
     val factors = factorsSeq.map{case (term, factor) =>
       toJson(Map(
@@ -85,7 +91,9 @@ object D3FG {
       ))
     }
 
-    val edgesSeq = fg.activeEdges.toList
+    val edgesSeq = fg.activeEdges.toList.filter(e =>
+      nodesIndex.contains(e.node) && factorsIndex.contains(e.factor)
+    )
     val edgesIndex = edgesSeq.zipWithIndex.toMap
     val links = edgesSeq.map { e =>
       toJson(Map(
@@ -94,7 +102,7 @@ object D3FG {
       ))
     }
 
-    val schedule = fg.messageHistory.take(20).map { ms =>
+    val schedule = fg.messageHistory.take(50).filter(_.forall(m => edgesIndex.contains(m.edge))).map { ms =>
       toJson(ms.map{ m =>
         toJson(Map(
           "edge"      -> toJson(edgesIndex(m.edge)),
