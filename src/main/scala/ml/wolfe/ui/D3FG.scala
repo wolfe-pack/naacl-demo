@@ -60,7 +60,7 @@ object D3FG {
         "type"      -> toJson("node"),
         "text"      -> toJson(""/*atom.toString*/),
         "hoverhtml" -> toJson(msgString(atom,
-          node.content.asInstanceOf[MaxProductBP#NodeContent].belief)
+          node.content.asInstanceOf[BP#NodeContent].belief)
         ),
         "x"         -> toJson(atom match {
           case a:SeqGroundAtom[_, _] => 60 + (width-120) * a.index / seqGroundAtomLength(a.seq.hashCode)
@@ -149,7 +149,7 @@ object D3FG {
       sum(0 until length) { i => I(y(i))} +
         sum(0 until length - 1) { i => I(y(i) <-> ! y(i + 1))}
     }
-    val mpParams = MaxProductParameters(1)
+    val mpParams = BPParameters(1)
     val result = argmax(Y)(y => model(5)(y) subjectTo (y.length === 5) argmaxBy maxProduct(mpParams)).evalResult()
 
     val fg = result.factorGraphs.head

@@ -14,7 +14,7 @@ object ChunkingDemo extends App {
     sum(0 until length) { i => I(y(i))} +
       sum(0 until length - 1) { i => I(y(i) <-> ! y(i + 1))}
   }
-  val mpParams = MaxProductParameters(10)
+  val mpParams = BPParameters(10)
   val result = argmax(Y)(y => model(5)(y) subjectTo (y.length === 5) argmaxBy maxProduct(mpParams)).evalResult()
   D3FG.display(result.factorGraphs.head)
 }
