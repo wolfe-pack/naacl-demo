@@ -1,7 +1,8 @@
 package ml.wolfe.examples
 import cc.factorie.la.DenseTensor1
 import ml.wolfe.Index
-import ml.wolfe.nlp.Document
+import ml.wolfe.nlp.ie.EntityMention
+import ml.wolfe.nlp.{IEAnnotation, Document}
 import ml.wolfe.term.{VectorDom, TermImplicits, DiscreteDom, Dom}
 import TermImplicits._
 
@@ -32,6 +33,27 @@ object TaggingExample {
         }
       )
     }
+
+    def withEntityTags(tags:Seq[Symbol]) = {
+      val entityIndices = tags.zipWithIndex.filter(_._1.name.take(1) == "B").map(_._2)
+      val entityMentions = entityIndices.map { i =>
+        val label = tags(i).name.drop(2)
+        val len = tags.drop(i + 1).takeWhile(_.name == "I_" + label).length
+        EntityMention(label, i, i + len+1)
+      }
+      d.copy(sentences =
+        (d.sentences zip d.sentences.scanLeft(0)(_ + _.tokens.length)).map {
+          case (sen, off) => sen.copy(ie = IEAnnotation({
+            entityMentions
+              .filter(x => x.start >= off && x.start < off + sen.size)
+              .map(x => EntityMention(x.label, x.start-off, x.end-off))
+              .toIndexedSeq
+          }))
+        }
+      )
+    }
   }
+
+
 
 }
