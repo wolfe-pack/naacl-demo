@@ -39,8 +39,13 @@ object D3Term {
          """.stripMargin
       data
     }
+    def depth(term:AnyTerm):Int = term match {
+      case n:NAry => (n.arguments map depth).max + 1
+      case _ => 1
+    }
 
     val termAsData = treeData(term)
+    val termDepth = depth(term)
 
     val html = s"""
       |<div id = "$id" class="term">
@@ -52,10 +57,12 @@ object D3Term {
       |  $termAsData
       |];
       |
+      |var depth = $termDepth
+      |
       |// ************** Generate the tree diagram	 *****************
       |var margin = {top: 40, right: 120, bottom: 20, left: 120},
       |	width = 960 - margin.right - margin.left,
-      |	height = 500 - margin.top - margin.bottom;
+      |	height = depth * 100 - margin.top - margin.bottom;
       |
       |var i = 0;
       |
@@ -78,11 +85,11 @@ object D3Term {
       |function update(source) {
       |
       |  // Compute the new tree layout.
-      |  var nodes = tree.nodes(root).reverse(),
+      |  var nodes = tree.nodes(source).reverse(),
       |	 links = tree.links(nodes);
       |
       |  // Normalize for fixed-depth.
-      |  nodes.forEach(function(d) { d.y = d.depth * 100; });
+      |  nodes.forEach(function(d) { d.y = d.depth * 50; });
       |
       |  // Declare the nodes…
       |  var node = svg.selectAll("g.node")
