@@ -25,7 +25,7 @@ object TaggingDemo extends App {
 
 
   implicit val index = new SimpleIndex()
-  implicit val maxProductParams = MaxProductParameters(iterations = 2)
+  implicit val maxProductParams = BPParameters(iterations = 2)
 
   val firstName = Set("John", "Jack")
   val lastName = Set("Denver")
