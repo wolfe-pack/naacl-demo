@@ -1,4 +1,4 @@
-import ml.wolfe.term.{TermImplicits, VarSeqDom}
+import ml.wolfe.term._
 import org.sameersingh.htmlgen.ConverterUtils._
 import org.sameersingh.htmlgen.Custom.Matrix
 import org.sameersingh.htmlgen.{RawHTML, HTML}
@@ -62,3 +62,34 @@ object DepParseExample {
 
 }
 
+object MLNExample extends App {
+
+  import TermImplicits._
+  import Argmaxer._
+
+  val p = Seq('Anna, 'Bob, 'Charlie)
+  val friendsSet = Set(('Anna, 'Bob),('Anna, 'Charlie)).flatMap(x => Set(x,x.swap))
+  implicit val Persons = p.toDom
+  val persons = p.toConst
+  implicit val Friends = FullMaps(Persons, Persons, Bools)
+  val friends = (for(p1 <- Persons.values; p2 <- Persons.values) yield (p1->p2)->friendsSet((p1,p2))).toMap.toConst
+
+  @domain case class World(smokes: Pred[Symbol], cancer: Pred[Symbol])
+  implicit val Worlds = World.Values(Preds(Persons), Preds(Persons))
+
+  def mln(w: Worlds.Term): DoubleTerm = {
+    import w._
+    sum(persons) {
+      p => -2.0 * I(cancer(p))
+    } + sum(persons) {
+      p => 1.0 * I(smokes(p) --> cancer(p))
+    } + sum(persons) { p1 => sum(persons) { p2 =>
+      1.0 * I(friends(p1, p2) --> (smokes(p1) <-> smokes(p2)))
+    }}
+  }
+  def evidence(world: Worlds.Term) = world.smokes('Anna.toConst) //true
+
+  implicit val mpParams = BPParameters(10)
+  val mu2 = argmax(Worlds) { w => mln(w) subjectTo evidence(w) argmaxBy maxProduct}
+  mu2.eval()
+}

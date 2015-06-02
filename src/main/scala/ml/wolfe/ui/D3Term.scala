@@ -63,12 +63,12 @@ object D3Term {
       |  $termAsData
       |];
       |
-      |var depth = $termDepth
+      |var depth = $termDepth + 1
       |
       |// ************** Generate the tree diagram	 *****************
       |var margin = {top: 40, right: 120, bottom: 20, left: 120},
       |	width = 960 - margin.right - margin.left,
-      |	height = depth * 60 - margin.top - margin.bottom;
+      |	height = depth * 70 - margin.top - margin.bottom;
       |
       |var i = 0;
       |
