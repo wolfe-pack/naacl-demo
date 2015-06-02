@@ -62,7 +62,7 @@ object D3Term {
       |// ************** Generate the tree diagram	 *****************
       |var margin = {top: 40, right: 120, bottom: 20, left: 120},
       |	width = 960 - margin.right - margin.left,
-      |	height = depth * 100 - margin.top - margin.bottom;
+      |	height = depth * 60 - margin.top - margin.bottom;
       |
       |var i = 0;
       |
