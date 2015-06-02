@@ -22,24 +22,30 @@ object D3Term {
     }
 
     def treeData(term:AnyTerm, parent:AnyTerm = null):String = {
-      val name = nodeName(term)
-      val parentName = if (parent != null) nodeName(parent) else null
-      val children = term match {
-        case n:NAry => n.arguments map (treeData(_,term))
-        case _ => Nil
+      term match {
+        case p:ProxyTerm[_] => treeData(p.self,parent)
+        case _ =>
+          val name = nodeName(term)
+          val parentName = if (parent != null) nodeName(parent) else null
+          val children = term match {
+            case n:NAry => n.arguments map (treeData(_,term))
+            case _ => Nil
+          }
+          val childrenString = children.mkString(",\n")
+          val data =
+            s"""
+               |{
+               |  "name": "$name",
+               |  "parent": "$parentName",
+               |  "children": [$childrenString]
+               |}
+             """.stripMargin
+          data
       }
-      val childrenString = children.mkString(",\n")
-      val data =
-        s"""
-           |{
-           |  "name": "$name",
-           |  "parent": "$parentName",
-           |  "children": [$childrenString]
-           |}
-         """.stripMargin
-      data
     }
+
     def depth(term:AnyTerm):Int = term match {
+      case p:ProxyTerm[_] => depth(p.self)
       case n:NAry => (n.arguments map depth).max + 1
       case _ => 1
     }

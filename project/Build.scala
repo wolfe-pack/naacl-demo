@@ -15,6 +15,15 @@ object BuildSettings {
       "com.google.guava" % "guava" % "18.0",
       "org.scala-lang.modules" %% "scala-pickling" % "0.10.0"),
 
+    resolvers ++= Seq(
+      "IESL Release" at "https://dev-iesl.cs.umass.edu/nexus/content/groups/public",
+      Resolver.mavenLocal,
+      Resolver.defaultLocal,
+      Resolver.sonatypeRepo("snapshots"),
+      Resolver.sonatypeRepo("releases"),
+      "UIUC Releases" at "http://cogcomp.cs.illinois.edu/m2repo"
+    ),
+
     //shellPrompt := ShellPrompt.buildShellPrompt,
     fork in run := true, //use a fresh JVM for sbt run
     connectInput in run := true, //to use readLine after sbt run
